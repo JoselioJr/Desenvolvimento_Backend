@@ -101,7 +101,7 @@ module.exports = {
             const cpfCheck = await passageiroRepository.findPassageiroByCpf(data.cpf);
 
             if (cpfCheck && cpfCheck._id.toString() !== id){
-                throw new Error('Passageiro já cadastrado!')
+                throw new Error('CPF já cadastrado em outro passageiro!')
             }
             
             const cpfValidator = validarCPF(data.cpf);
