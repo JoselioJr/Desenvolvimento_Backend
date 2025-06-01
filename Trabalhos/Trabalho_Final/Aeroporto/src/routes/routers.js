@@ -41,7 +41,7 @@ router.delete('/portao/:id', portaoDeEmbarqueController.deletePortaoDeEmbarque);
 router.post('/funcionario', funcionarioValidator.postFuncionarioAction, funcionarioController.postFuncionario);
 
 // Rotas solicitadas na atividade:
-// Todos os voos programados para o dia atual
+// Todos os voos programados para o dia em específico
 router.get('/voo/:data', vooController.getVoosByDia);
 // Lista de passageiros por voo
 router.get('/passageiro/:voo', passageiroController.getAllPassageirosByVoo);
