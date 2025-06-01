@@ -1,0 +1,702 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Gerenciamento de um Aeroporto",
+        "description": "Este é um projeto de back-end para o gerenciamento de um aeroporto, desenvolvido com Node.js e MongoDB, utilizando o ODM Mongoose para a modelagem e manipulação dos dados",
+        "contact": {
+            "email": "joselio.fc@hotmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/passageiro": {
+            "get": {
+                "summary": "Busca de todos os Passageiros cadastrados",
+                "description": "Essa rota será responsável para a busca dos passageiros já cadastrados no banco de dados",
+                "tags": ["Passageiro"],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Passageiro"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cadastra um novo Passageiro",
+                "description": "Cadastramento um novo Passageiro",
+                "tags": ["Passageiro"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Passageiro"
+                            },
+                            "examples": {
+                                "passageiro": {
+                                    "value": {
+                                        "nome": "Nome do Passageiro",
+                                        "cpf": "741.384.700-00",
+                                        "vooId": "ID do voo",
+                                        "statusCheckIn": "pendente"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "201": {
+                        "description": "Passageiro Criado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "Object",
+                                    "$ref": "#/components/schemas/Passageiro"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Possíveis erros: Passageiro cadastrado, CPF Inválido, Voo não encontrado ou Voo já concluído!"
+                    }
+                }
+            }
+        },
+        "/passageiro/{id}": {
+            "put": {
+                "summary": "Atualizar um Passageiro",
+                "description": "Não há necessidade de passar um parâmetro que não vai ser atualizado, apenas aqueles que irão ser atualizados",
+                "tags": ["Passageiro"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do Passageiro a ser atualizado",
+                        "require": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Passageiro"
+                            },
+                            "examples": {
+                                "passageiro": {
+                                    "value": {
+                                        "nome": "Nome do Passageiro",
+                                        "cpf": "741.384.700-00",
+                                        "vooId": "ID do voo",
+                                        "statusCheckIn": "pendente"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Passageiro não encontrado"
+                    },
+                    "500": {
+                        "description": "Possíveis erros: Passageiro não encontrado, CPF já cadastrado em outro passageiro, CPF inválido, Voo não encontrado, Voo não encontrado ou Voo tem que estar com o Status de Embarque"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Excluir um Passageiro",
+                "description": "Exclusão de um Passageiro",
+                "tags": ["Passageiro"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do Passageiro a ser excluido",
+                        "require": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "204": {
+                        "description": "Passageiro excluido"
+                    },
+                    "404": {
+                        "description": "Passageiro não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro na deleção do Passageiro"
+                    }
+                }
+            }
+        },
+        "/voo": {
+           "get": {
+                "summary": "Busca de todos os Voos cadastrados",
+                "description": "Essa rota será responsável para a busca dos voos já cadastrados no banco de dados",
+                "tags": ["Voos"],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Voo"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cadastra um novo Voo",
+                "description": "Cadastramento um novo Voo",
+                "tags": ["Voos"],
+                "security": [{"bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Voo"
+                            },
+                            "examples": {
+                                "voo": {
+                                    "value": {
+                                        "nmrVoo": "4563",
+                                        "origem": "Goiânia",
+                                        "destino": "São Paulo",
+                                        "dataHrPartida": "11/05/2025",
+                                        "portaoId": "ID do Portão",
+                                        "status": "programado"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "201": {
+                        "description": "Voo Criado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "Object",
+                                    "$ref": "#/components/schemas/Voo"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Possíveis erros: Portão não encontrad, Portão não está disponível ou Este voo já está cadastrado!"
+                    }
+                }
+            }
+        },
+        "/voo/{id}": {
+            "put": {
+                "summary": "Atualizar um Voo",
+                "description": "Não há necessidade de passar um parâmetro que não vai ser atualizado, apenas aqueles que irão ser atualizados",
+                "tags": ["Voos"],
+                "security": [{"bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do Voo a ser atualizado",
+                        "require": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Voo"
+                            },
+                            "examples": {
+                                "voo": {
+                                    "value": {
+                                        "nmrVoo": "4563",
+                                        "origem": "Goiânia",
+                                        "destino": "São Paulo",
+                                        "dataHrPartida": "11/05/2025",
+                                        "portaoId": "ID do Portão",
+                                        "status": "programado"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Voo não encontrado"
+                    },
+                    "500": {
+                        "description": "Possíveis erros: Portão não está disponível, Voo não encontrado ou Voo já concluído, não pode ser associado a um portão!"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Excluir um Voo",
+                "description": "Exclusão de um Voo",
+                "tags": ["Voos"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do Voo a ser excluido",
+                        "require": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "204": {
+                        "description": "Voo excluido"
+                    },
+                    "404": {
+                        "description": "Voo não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro na deleção do Voo"
+                    }
+                }
+            }
+        },
+        "/portao": {
+            "get": {
+                "summary": "Busca de todos os Portões cadastrados",
+                "description": "Essa rota será responsável para a busca dos portões já cadastrados no banco de dados",
+                "tags": ["Portão"],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Portao"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cadastra um novo Portão",
+                "description": "Cadastramento um novo Portão",
+                "tags": ["Portão"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Portao"
+                            },
+                            "examples": {
+                                "portao": {
+                                    "value": {
+                                        "codigo": "A1",
+                                        "disponivel": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "201": {
+                        "description": "Portão Criado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "Object",
+                                    "$ref": "#/components/schemas/Portao"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Este Portão já está cadastrado!"
+                    }
+                }
+            }
+        },
+        "/portao/{id}": {
+            "put": {
+                "summary": "Atualizar um Portão",
+                "description": "Não há necessidade de passar um parâmetro que não vai ser atualizado, apenas aqueles que irão ser atualizados",
+                "tags": ["Portão"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do Portão a ser atualizado",
+                        "require": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Portao"
+                            },
+                            "examples": {
+                                "portao": {
+                                    "value": {
+                                        "codigo": "A1",
+                                        "disponivel": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Portão de embarque não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro na atualização do Portão"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Excluir um Portão",
+                "description": "Exclusão de um Portão",
+                "tags": ["Portão"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do Portão a ser excluido",
+                        "require": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "204": {
+                        "description": "Portão excluido"
+                    },
+                    "404": {
+                        "description": "Portão de embarque não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro na deleção do Portão"
+                    }
+                }
+            }
+        },
+        "/funcionario": {
+            "post": {
+                "summary": "Cadastra um novo Funcionário",
+                "description": "Cadastramento um novo Funcionário",
+                "tags": ["Funcionário"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Funcionario"
+                            },
+                            "examples": {
+                                "funcionario": {
+                                    "value": {
+                                        "nome": "Nome do Funcionario",
+                                        "email": "teste@teste.com",
+                                        "senha": "SenhaMuitoForte",
+                                        "cargo": "admin"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "201": {
+                        "description": "Funcionário Criado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "Object",
+                                    "$ref": "#/components/schemas/Funcionario"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Funcionário já cadastrado!"
+                    }
+                }
+            }
+        },
+        "/voo/{data}": {
+            "get": {
+                "summary": "Busca todos os voos programados por dia",
+                "description": "Busca todos os voos programados para o dia requisitado",
+                "tags": ["Relatórios"],
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "path",
+                        "description": "Exemplo de data: 2025-10-05",
+                        "require": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Voo"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Possíveis erros: Data inválida ou Nenhum voo encontrado!"
+                    }
+                }
+            }
+        },
+        "/passageiro/{voo}": {
+            "get": {
+                "summary": "Pasageiros por Voo",
+                "description": "Busca todos os Pasageiros por Voo",
+                "tags": ["Relatórios"],
+                "parameters": [
+                    {
+                        "name": "voo",
+                        "in": "path",
+                        "description": "Id do Voo",
+                        "require": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Passageiro"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Possíveis erros: Voo não encontrado ou Nenhum passageiro encontrado para este voo"
+                    }
+                }
+            }  
+        },
+        "/resumo": {
+            "get": {
+                "summary": "Status de Check-in dos Passageiros",
+                "description": "Status do Check-in de todos os passageiros",
+                "tags": ["Relatórios"],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Passageiro"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Nenhum passageiro encontrado!"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "summary": "Login de Funcionário",
+                "description": "Realização do login dos funcionários",
+                "tags": ["Login"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Funcionario"
+                            },
+                            "examples": {
+                                "login": {
+                                    "value": {
+                                        "email": "teste@teste.com",
+                                        "senha": "SenhaMuitoForte"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Erro na requisição!"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "Object",
+                                    "$ref": "#/components/schemas/Funcionario"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    },
+                    "500": {
+                        "description": "Possíveis erros: Funcionário não encontrado ou Senha incorreta!"
+                    }
+                }
+            }
+        }
+    },
+    "components" : {
+        "schemas": {
+            "Passageiro": {
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string"
+                    },
+                    "cpf": {
+                        "type": "string"
+                    },
+                    "vooId": {
+                        "type": "string"
+                    },
+                    "statusCheckIn": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Voo": {
+                "type": "object",
+                "properties": {
+                    "nmrVoo": {
+                        "type": "number"
+                    },
+                    "origem": {
+                        "type": "string"
+                    },
+                    "destino": {
+                        "type": "string"
+                    },
+                    "dataHrPartida": {
+                        "type": "date"
+                    },
+                    "portaoId": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Portao": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "type": "string"
+                    },
+                    "disponivel": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "Funcionario": {
+                "type": "Object",
+                "properties": {
+                    "nome": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "senha": {
+                        "type": "string"
+                    },
+                    "cargo": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }          
+        }
+    }
+}
