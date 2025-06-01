@@ -154,12 +154,6 @@ module.exports = {
         return await passageiroRepository.editPassageiroById(id, updates);
     },
     deletePassageiro: async(id) =>{
-        const passageiro = await passageiroRepository.findPassageiroById(id);
-
-        if (!passageiro){
-            throw new Error('Passageiro não encontrado!')
-        }
-
         return await passageiroRepository.deletePassageiroById(id);
     }
 }
